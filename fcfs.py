@@ -8,8 +8,6 @@ processes = [
 waiting_time = 0
 turnaround_time = 0
 
-67
-
 #Algorithm: Scheduling logic and calculations
 current_time = 0
 results = []
