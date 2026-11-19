@@ -8,7 +8,8 @@ processes = [
 #Algorithm: Scheduling logic and calculations
 current_time = 0
 results = []
-for
+for p in processes:
+    
 
 #Averages: Average waiting time, average turnaround time
 
