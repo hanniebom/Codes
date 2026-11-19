@@ -14,7 +14,7 @@ results = []
 for p in processes:
     name = p[0]
     burst = p[1]
-
+baba
 #Averages: Average waiting time, average turnaround time
 avg_waiting_time = sum(waiting_time)/len(processes)
 avg_turnaround_time = sum(turnaround_time)/len(processes)
