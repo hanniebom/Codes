@@ -11,7 +11,7 @@ processes.sort(key=lambda p: p[1])
 all_procs = []
 for pid, arrival, burst in processes:
     all_procs.append([pid, arrival, burst, burst]) 
-#Averages: Average waiting time, average turnaround time
+#Algorithm: Scheduling logic and calculations
 queue = deque()
 current_time = 0
 index = 0          
