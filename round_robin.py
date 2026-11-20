@@ -1,78 +1,62 @@
-#INPUT: User enters data 
+#INPUT: Default data
+processes = [
+    ["P1", 0, 5],
+    ["P2", 0, 3],
+    ["P3", 0, 7],
+    ["P4", 0, 2]
+]
 
-def fetch_user_input(): 
+time_quantum = 2
 
-    num_of_procs = int(input("Enter the number of processes: "))
+# Store each process's remaining burst time
+remaining_time = [5, 3, 7, 2]
 
-    processes = []
+# Store completion times
+completion_time = [0, 0, 0, 0]
 
-    for proc_count in range(1, num_of_procs + 1):
-        print(f"\nEnter data for Process {proc_count}:")
-        arrival_time = int(input('\nArrival Time: '))
-        burst_time = int(input('\nBurst Time: '))
-        processes.append([f"P{proc_count}", arrival_time, burst_time])
+total_waiting_time = 0
+total_turnaround_time = 0
 
-    time_quantum = int(input('\nEnter the Time Quantum: '))
-    
-    return processes, time_quantum, num_of_procs
-    
-def round_robin_alg(processes, time_quantum, num_of_procs):
-    
+#Algorithm: Scheduling logic and calculations
+current_time = 0
 
+while any(remaining_time):
 
-    # Store each process's remaining burst time
-    remaining_time = [proc[2] for proc in processes]
+    # Go through each process
+    for p in range(len(processes)):
 
-    # Store completion times
-    completion_time = [0] * num_of_procs
+        # Only run processes that still have time remaining
+        if remaining_time[p] > 0:
 
-    total_waiting_time = 0
-    total_turnaround_time = 0
+            if remaining_time[p] > time_quantum:
+                current_time += time_quantum
+                remaining_time[p] -= time_quantum
 
+            else:
+                current_time += remaining_time[p]
+                remaining_time[p] = 0
+                completion_time[p] = current_time
 
+#Calculations: Waiting time and turnaround time
+results = []
 
-    #Algorithm: Scheduling logic and calculations
-    current_time = 0
+for p in range(len(processes)):
+    name = processes[p][0]
+    arrival_time = processes[p][1]
+    burst = processes[p][2]
 
-    while any(remaining_time):
+    turnaround_time = completion_time[p] - arrival_time
+    waiting_time = turnaround_time - burst
 
-        # Go through each process
-        for p in range(num_of_procs):
+    total_waiting_time += waiting_time
+    total_turnaround_time += turnaround_time
+    results.append([name, arrival_time, burst, completion_time[p], turnaround_time, waiting_time])
 
-            # Only run processes that still have time remaining
-            if remaining_time[p] > 0:
+#Averages: Average waiting time, average turnaround time
+avg_waiting_time = total_waiting_time / len(processes)
+avg_turnaround_time = total_turnaround_time / len(processes)
 
-                if remaining_time[p] > time_quantum:
-                    current_time += time_quantum
-                    remaining_time[p] -= time_quantum
-
-                else:
-                    current_time += remaining_time[p]
-                    remaining_time[p] = 0
-                    completion_time[p] = current_time
-
-    #Calculations: Waiting time and turnaround time
-    results = []
-
-    for p in range(num_of_procs):
-        name = processes[p][0]
-        arrival_time = processes[p][1]
-        burst = processes[p][2]
-
-        turnaround_time = completion_time[p] - arrival_time
-        waiting_time = turnaround_time - burst
-
-        total_waiting_time += waiting_time
-        total_turnaround_time += turnaround_time
-        results.append([name, arrival_time, burst, completion_time[p], turnaround_time, waiting_time])
-
-    #Averages: Average waiting time, average turnaround time
-    avg_waiting_time = total_waiting_time / num_of_procs
-    avg_turnaround_time = total_turnaround_time / num_of_procs
-    return results, avg_waiting_time, avg_turnaround_time
-
-
-    #Output: Print formatted results table
+#Output: Print formatted results table
 def print_results_table(results, avg_waiting_time, avg_turnaround_time):
     print("RR".center(84))
     print("*" * 84)
@@ -87,6 +71,4 @@ def print_results_table(results, avg_waiting_time, avg_turnaround_time):
     print(f"Average turnaround time: {avg_turnaround_time:.2f}")
     print("*" * 84, "\n")
 
-processes, time_quantum, num_of_procs = fetch_user_input()
-results, avg_waiting_time, avg_turnaround_time = round_robin_alg(processes, time_quantum, num_of_procs )
 print_results_table(results, avg_waiting_time, avg_turnaround_time)
