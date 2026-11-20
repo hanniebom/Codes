@@ -31,7 +31,7 @@ avg_turnaround_time = total_turnaround_time / len(processes)
 
 #Output: Print formatted results table
 def print_results_table(results, avg_waiting_time, avg_turnaround_time):
-    print("\n"," " * 11 , "SJF")
+    print("SJF".center(50))
     print("*" * 50)
     print(f"{"Process":<12} {"Burst":<12} {"Waiting":<12} {"Turnaround":<12}")
     print("*" * 50)
