@@ -27,3 +27,17 @@ avg_waiting_time = total_waiting_time / len(processes)
 avg_turnaround_time = total_turnaround_time / len(processes)
 
 #Output: Print formatted results table
+def print_results_table(results, avg_waiting_time, avg_turnaround_time):
+    print("*" * 50)
+    print(f"{"Process":<12} {"Burst":<12} {"Waiting":<12} {"Turnaround":<12}")
+    print("*" * 50)
+
+    for ProcessName, burst, waiting, turnaround in results:
+        print(f"{ProcessName:<12} {burst:<12} {waiting:<12} {turnaround:<12}")
+
+    print("*" * 50)
+    print(f"Average waiting time: {avg_waiting_time:.2f}")
+    print(f"Average turnaround time: {avg_turnaround_time:.2f}")
+    print("*" * 50)
+
+print_results_table(results, avg_waiting_time, avg_turnaround_time)
