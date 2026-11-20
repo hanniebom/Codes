@@ -1,15 +1,8 @@
 #INPUT: Default data
 processes = [
-    ["P1", 10],
+    ["P1", 5],
     ["P2", 3],
-    ["P3", 8],
-    ["P4", 15],
-    ["P5", 2],
-    ["P6", 7],
-    ["P7", 19],
-    ["P8", 4],
-    ["P9", 12],
-    ["P10", 6]
+    ["P3", 7]
 ]
 
 # Sort processes in ascending order
