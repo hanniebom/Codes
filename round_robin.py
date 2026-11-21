@@ -18,7 +18,7 @@ def fetch_user_input():
     
 def round_robin_alg(processes, time_quantum, num_of_procs):
     
-
+    processes.sort(key=lambda proc: proc[1])
 
     # Store each process's remaining burst time
     remaining_time = [proc[2] for proc in processes]
@@ -35,13 +35,14 @@ def round_robin_alg(processes, time_quantum, num_of_procs):
     current_time = 0
 
     while any(remaining_time):
-
+        is_cpu_idle = True
         # Go through each process
         for p in range(num_of_procs):
 
-            # Only run processes that still have time remaining
-            if remaining_time[p] > 0:
-
+            # Only run processes that still have time remaining and the arrival time is lessthan or equal current time
+            if remaining_time[p] > 0 and processes[p][1] <= current_time:
+                is_cpu_idle = False
+                
                 if remaining_time[p] > time_quantum:
                     current_time += time_quantum
                     remaining_time[p] -= time_quantum
@@ -50,6 +51,9 @@ def round_robin_alg(processes, time_quantum, num_of_procs):
                     current_time += remaining_time[p]
                     remaining_time[p] = 0
                     completion_time[p] = current_time
+
+        if is_cpu_idle:
+            current_time += 1
 
     #Calculations: Waiting time and turnaround time
     results = []
@@ -88,5 +92,5 @@ def print_results_table(results, avg_waiting_time, avg_turnaround_time):
     print("*" * 84, "\n")
 
 processes, time_quantum, num_of_procs = fetch_user_input()
-results, avg_waiting_time, avg_turnaround_time = round_robin_alg(processes, time_quantum, num_of_procs )
+results, avg_waiting_time, avg_turnaround_time = round_robin_alg(processes, time_quantum, num_of_procs)
 print_results_table(results, avg_waiting_time, avg_turnaround_time)
