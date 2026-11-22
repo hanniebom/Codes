@@ -1,19 +1,46 @@
-#INPUT: User enters data 
+# Helper function to validate whole number inputs
+def get_number(question, minimum):
+    while True:
+        try:
+            num = int(input(question))
+            if num >= minimum:
+                return num
+            print(f"Please enter a number of at least {minimum}.")
+        except ValueError:
+            print("Invalid input. Please enter a whole number.")
 
-def fetch_user_input(): 
 
-    num_of_procs = int(input("Enter the number of processes: "))
+# INPUT: Default test data or validated custom user input
+def fetch_user_input():
+    while True:
+        choice = input("Press 1 for Default Data or 2 for Custom Input: ")
+        if choice == "1":
+            processes = [
+                ["P1", 0, 5],
+                ["P2", 0, 3],
+                ["P3", 0, 7],
+                ["P4", 0, 2]
+            ]
+            time_quantum = 2
+            return processes, time_quantum, len(processes)
+        
+        elif choice == "2":
+            break
 
+        else:
+            print("Invalid choice. Please enter 1 or 2.")
+
+    num_of_procs = get_number("Enter the number of processes: ", 1)
     processes = []
 
     for proc_count in range(1, num_of_procs + 1):
         print(f"\nEnter data for Process {proc_count}:")
-        arrival_time = int(input('\nArrival Time: '))
-        burst_time = int(input('\nBurst Time: '))
+        arrival_time = get_number("Arrival Time: ", 0)
+        burst_time = get_number("Burst Time: ", 1)
         processes.append([f"P{proc_count}", arrival_time, burst_time])
 
-    time_quantum = int(input('\nEnter the Time Quantum: '))
-    
+    time_quantum = get_number("\nEnter the Time Quantum: ", 1)
+
     return processes, time_quantum, num_of_procs
     
 def round_robin_alg(processes, time_quantum, num_of_procs):
@@ -76,7 +103,7 @@ def round_robin_alg(processes, time_quantum, num_of_procs):
     return results, avg_waiting_time, avg_turnaround_time
 
 
-    #Output: Print formatted results table
+#Output: Print formatted results table
 def print_results_table(results, avg_waiting_time, avg_turnaround_time):
     print("RR".center(84))
     print("*" * 84)

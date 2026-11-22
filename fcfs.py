@@ -12,14 +12,21 @@ def get_number(question, minimum):
 
 # INPUT: Default test data or validated custom user input
 def fetch_user_input():
-    choice = input("Press 1 for Default Data (5, 8, 12) or 2 for Custom Input: ")
-    if choice == "1":
-        processes = [
-            ["P1", 5],
-            ["P2", 8],
-            ["P3", 12]
-        ]
-        return processes, len(processes)
+    while True:
+        choice = input("Press 1 for Default Data (5, 8, 12) or 2 for Custom Input: ")
+        if choice == "1":
+            processes = [
+                ["P1", 5],
+                ["P2", 8],
+                ["P3", 12]
+            ]
+            return processes, len(processes)
+        elif choice == "2":
+            break
+
+        else:
+            print("Invalid choice. Please enter 1 or 2.")
+    
 
     num_of_procs = get_number("Enter the number of processes: ", 1)
     processes = []
