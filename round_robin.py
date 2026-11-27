@@ -1,3 +1,8 @@
+#note to self:
+#add a desc for each function, write the rest of the comments, fix waiting time because it's not counted, add file input choice 
+
+from collections import deque
+
 # Helper function to validate whole number inputs
 def get_number(question, minimum):
     while True:
@@ -17,9 +22,9 @@ def fetch_user_input():
         if choice == "1":
             processes = [
                 ["P1", 0, 5],
-                ["P2", 0, 3],
-                ["P3", 0, 7],
-                ["P4", 0, 2]
+                ["P2", 5, 3],
+                ["P3", 16, 7],
+                ["P4", 10, 2]
             ]
             time_quantum = 2
             return processes, time_quantum, len(processes)
@@ -42,60 +47,69 @@ def fetch_user_input():
     time_quantum = get_number("\nEnter the Time Quantum: ", 1)
 
     return processes, time_quantum, num_of_procs
-    
+
+#Algorithm: Scheduling logic and calculations
 def round_robin_alg(processes, time_quantum, num_of_procs):
-    
-    processes.sort(key=lambda proc: proc[1])
+
+    arrival_order = sorted(range(num_of_procs), key= lambda i: processes[i][1])
+    next_to_arrive = 0
+    ready_procs_queue = deque()
+    num_of_completed_procs = 0
 
     # Store each process's remaining burst time
     remaining_time = [proc[2] for proc in processes]
 
     # Store completion times
     completion_time = [0] * num_of_procs
-
-    total_waiting_time = 0
-    total_turnaround_time = 0
-
-
-
-    #Algorithm: Scheduling logic and calculations
     current_time = 0
 
-    while any(remaining_time):
-        is_cpu_idle = True
-        # Go through each process
-        for p in range(num_of_procs):
+    while num_of_completed_procs < num_of_procs:
 
-            # Only run processes that still have time remaining and the arrival time is lessthan or equal current time
-            if remaining_time[p] > 0 and processes[p][1] <= current_time:
-                is_cpu_idle = False
-                
-                if remaining_time[p] > time_quantum:
-                    current_time += time_quantum
-                    remaining_time[p] -= time_quantum
+        while next_to_arrive < num_of_procs and processes[arrival_order[next_to_arrive]][1]<= current_time:
+            ready_procs_queue.append(arrival_order[next_to_arrive])
+            next_to_arrive += 1
 
-                else:
-                    current_time += remaining_time[p]
-                    remaining_time[p] = 0
-                    completion_time[p] = current_time
+        #if the CPU is idle, skip the clock to the next process to arrive
+        if not ready_procs_queue:
+            current_time = processes[arrival_order[next_to_arrive]][1]
+            continue
 
-        if is_cpu_idle:
-            current_time += 1
+        #Take the process at the front of the queue
+        next_proc_to_run = ready_procs_queue.popleft()
+
+        #run it for one quantum time, or less if it finishes sooner
+        run_time = min(time_quantum, remaining_time[next_proc_to_run])
+        current_time += run_time
+        remaining_time[next_proc_to_run] -= run_time
+
+        # Processes that arrived while next_proc_to_run was running go in before next_proc_to_run is re-queued into ready_procs_queue
+        while next_to_arrive < num_of_procs and processes[arrival_order[next_to_arrive]][1] <= current_time:
+            ready_procs_queue.append(arrival_order[next_to_arrive])
+            next_to_arrive += 1
+
+        #if not finished, put the proceess back of the queue
+        if remaining_time[next_proc_to_run] > 0:
+            ready_procs_queue.append(next_proc_to_run)
+        else:
+            completion_time[next_proc_to_run] = current_time
+            num_of_completed_procs += 1
 
     #Calculations: Waiting time and turnaround time
     results = []
+    total_waiting_time = 0
+    total_turnaround_time = 0
 
-    for p in range(num_of_procs):
-        name = processes[p][0]
-        arrival_time = processes[p][1]
-        burst = processes[p][2]
+    for proc_num in range(num_of_procs):
+        name = processes[proc_num][0]
+        arrival_time = processes[proc_num][1]
+        burst = processes[proc_num][2]
 
-        turnaround_time = completion_time[p] - arrival_time
+        turnaround_time = completion_time[proc_num] - arrival_time
         waiting_time = turnaround_time - burst
 
         total_waiting_time += waiting_time
         total_turnaround_time += turnaround_time
-        results.append([name, arrival_time, burst, completion_time[p], turnaround_time, waiting_time])
+        results.append([name, arrival_time, burst, completion_time[proc_num], turnaround_time, waiting_time])
 
     #Averages: Average waiting time, average turnaround time
     avg_waiting_time = total_waiting_time / num_of_procs
