@@ -1,5 +1,8 @@
 #note to self:
-#add a desc for each function, write the rest of the comments, fix waiting time because it's not counted, add file input choice 
+# add a desc for each function [], write the rest of the comments [], 
+# fix waiting time, (UPDATE, it was actually counting, the test data tricked me LOL) [DONE], 
+# add file input choice [], add the option to esc if the user wants to finish the program early
+# add visual presentation (gantt chart) (optional)
 
 from collections import deque
 
@@ -19,12 +22,12 @@ def get_number(question, minimum):
 def fetch_user_input():
     while True:
         choice = input("Press 1 for Default Data or 2 for Custom Input: ")
-        if choice == "1":
+        if choice == "1":  #those are test values
             processes = [
                 ["P1", 0, 5],
-                ["P2", 5, 3],
+                ["P2", 2, 3],
                 ["P3", 16, 7],
-                ["P4", 10, 2]
+                ["P4", 6, 2]
             ]
             time_quantum = 2
             return processes, time_quantum, len(processes)
